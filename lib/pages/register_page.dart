@@ -1,16 +1,59 @@
 import 'package:auth_flutter/components/my_button.dart';
 import 'package:auth_flutter/components/my_textfield.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class LoginPage extends StatelessWidget {
+import '../helper/helper_functions.dart';
+
+class RegisterPage extends StatefulWidget {
   final void Function()? onTap;
 
-  LoginPage({super.key, required this.onTap});
 
+  const RegisterPage({super.key, required this.onTap});
+
+  @override
+  State<RegisterPage> createState() => _RegisterPageState();
+}
+
+class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController emailController = TextEditingController();
+
+  final TextEditingController usernameController = TextEditingController();
+
   final TextEditingController passwordController = TextEditingController();
 
-  void login() {}
+  final TextEditingController confirmPwController = TextEditingController();
+
+  void register() async {
+    showDialog(
+      context: context,
+      builder: (context) => const Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+
+    if (passwordController.text != confirmPwController.text) {
+      Navigator.pop(context);
+
+      displayMessageToUser("Password don't match!", context);
+    }
+
+    try {
+      UserCredential? userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+            email: emailController.text,
+            password: passwordController.text,
+          );
+
+      Navigator.pop(context);
+
+    } on FirebaseAuthException catch (e) {
+      Navigator.pop(context);
+
+      displayMessageToUser(e.code, context);
+    }
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +83,15 @@ class LoginPage extends StatelessWidget {
 
                 const SizedBox(height: 50),
 
+                // Username textfield
+                MyTextField(
+                  hintText: "username",
+                  obscureText: false,
+                  controller: usernameController,
+                ),
+
+                const SizedBox(height: 10),
+
                 // Email textfield
                 MyTextField(
                   hintText: "email",
@@ -58,43 +110,47 @@ class LoginPage extends StatelessWidget {
 
                 const SizedBox(height: 10),
 
+                // Confirm password textfield
+                MyTextField(
+                  hintText: "confirm Password",
+                  obscureText: true,
+                  controller: confirmPwController,
+                ),
+
+                const SizedBox(height: 10),
+
                 // Forgot password
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Text(
                       "Forgot Password?",
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.secondary,
-                      ),
+                      style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                     ),
                   ],
                 ),
 
                 const SizedBox(height: 25),
 
-                // Sign in button
+                // Register button
                 MyButton(
-                  text: "Login",
-                  onTap: login,
+                  text: "Register",
+                  onTap: register,
                 ),
 
                 const SizedBox(height: 25),
 
-                // Don't have an account? Register here.
+                // Don't have an account? Login here.
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      "Don't have an account? ",
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.inversePrimary,
-                      ),
+                    const Text(
+                      "Already have an account? ",
                     ),
                     GestureDetector(
-                      onTap: onTap,
+                      onTap: widget.onTap,
                       child: Text(
-                        "Register Here",
+                        "Login Here",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Theme.of(context).colorScheme.inversePrimary,
@@ -111,3 +167,4 @@ class LoginPage extends StatelessWidget {
     );
   }
 }
+
