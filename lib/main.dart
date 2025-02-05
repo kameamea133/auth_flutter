@@ -1,4 +1,4 @@
-import 'package:auth_flutter/auth/login_or_register.dart';
+import 'package:auth_flutter/auth/auth.dart';
 import 'package:auth_flutter/firebase_options.dart';
 import 'package:auth_flutter/theme/dark_mode.dart';
 import 'package:auth_flutter/theme/light_mode.dart';
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const LoginOrRegister(),
+      home: const AuthPage(),
       theme: lightMode,
       darkTheme: darkMode,
     );

@@ -36,22 +36,30 @@ class _RegisterPageState extends State<RegisterPage> {
       Navigator.pop(context);
 
       displayMessageToUser("Password don't match!", context);
+    } else {
+      try {
+        UserCredential? userCredential =
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: emailController.text.trim(),
+          password: passwordController.text,
+        );
+
+        Navigator.pop(context);
+        displayMessageToUser("Account created successfully!", context);
+
+      } on FirebaseAuthException catch (e) {
+        Navigator.pop(context);
+        print("Firebase Auth Error: ${e.code}");
+        displayMessageToUser(e.code, context);
+      }
+      catch (e) {
+        Navigator.pop(context);
+        print("Unexpected Error: $e"); // ✅ Voir les erreurs inattendues
+        displayMessageToUser("An error occurred!", context);
+      }
     }
 
-    try {
-      UserCredential? userCredential =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
-            email: emailController.text,
-            password: passwordController.text,
-          );
 
-      Navigator.pop(context);
-
-    } on FirebaseAuthException catch (e) {
-      Navigator.pop(context);
-
-      displayMessageToUser(e.code, context);
-    }
 
   }
 
