@@ -38,12 +38,6 @@ class _RegisterPageState extends State<RegisterPage> {
       displayMessageToUser("Password don't match!", context);
     } else {
       try {
-        UserCredential? userCredential =
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: emailController.text.trim(),
-          password: passwordController.text,
-        );
-
         Navigator.pop(context);
         displayMessageToUser("Account created successfully!", context);
 
@@ -54,7 +48,7 @@ class _RegisterPageState extends State<RegisterPage> {
       }
       catch (e) {
         Navigator.pop(context);
-        print("Unexpected Error: $e"); // ✅ Voir les erreurs inattendues
+        print("Unexpected Error: $e"); 
         displayMessageToUser("An error occurred!", context);
       }
     }
